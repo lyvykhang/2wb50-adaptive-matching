@@ -95,14 +95,15 @@ class Sim:
                 else: # process task directly if there are free experts.
                     ex = self.sampleExpert(idleExperts) # assign random idle expert. NOTE: sampleExpert removes expert from idleExperts.
                     attemptResult = ex.attempt(task) # perform task and check outcome.
-
+                    servTime = self.sampleServTime()
+                    
                     if (attemptResult == 0): # if failed, update mixed type and move task to pool. 
                         ex.updateMixedType(task)
                         pool.append(task)
                     else:
-                        results.registerSojournTime(t, task)
+                        results.registerSojournTime(t + servTime, task)
 
-                    servTime = self.sampleServTime() # need to add a "departure" event regardless of success/fail...
+                    # need to add a "departure" event regardless of success/fail...
                     fes.add(Event(Event.DEPARTURE, t + servTime, task, ex))  #... so the pool of outstanding tasks can be interacted with. 
                     
                 arrTime = t + self.sampleInterArr() # schedule next event.
@@ -122,14 +123,14 @@ class Sim:
                         newTask = sample(pool, 1)[0] # NOTE: does NOT yet remove task from the pool.
 
                     attemptResult = ex.attempt(newTask)
+                    servTime = self.sampleServTime()
                     
                     if (attemptResult == 0):
                         ex.updateMixedType(newTask)
                     else: # if success, remove from pool.
                         pool.remove(newTask)
-                        results.registerSojournTime(t, newTask)
+                        results.registerSojournTime(t + servTime, newTask)
 
-                    servTime = self.sampleServTime()
                     fes.add(Event(Event.DEPARTURE, t + servTime, newTask, ex))
 
         results.updateMeanSojournTime()
