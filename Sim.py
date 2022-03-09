@@ -34,16 +34,12 @@ class Sim:
 
 ### FUNCTIONS FOR BACKPRESSURE ALGO ###
     def checkTaskInSquare(self, z, i, j, eps): # (i, j) both in range [0, 1/eps-1].
-        bounds = ((i*eps, j*eps), ((i+1)*eps, (j+1)*eps)) # convert into grid square boundaries.
-        check = False
-        t = tuple(z)
-        if (bounds[0][0] <= t[0] < bounds[1][0]):
-            if (bounds[0][1] <= t[1] < bounds[1][1]):
-                check = True
-        return check
+        z1, z2 = int(round(z[0]/eps, 12)), int(round(z[1]/eps, 12)) # take the integer component of z/eps (rounded to 12 d.p. to reduce misclassification...
+        # ... due to rounding errors), if this is equal to (i, j), the mixed-type is in the square. 
+        return z1 == i and z2 == j
 
 
-    def countTasksInSquare(self, pool, i, j, eps): # go through the pool of tasks at time t, count any task with mixed type in set A_{i, j}
+    def countTasksInSquare(self, pool, i, j, eps): # go through the pool of tasks at time t, count any task with mixed type in set A_{i, j}.
         N_ij = 0
         for task in pool:
             if self.checkTaskInSquare(task.mixedType, i, j, eps):
@@ -52,20 +48,8 @@ class Sim:
             
 
     def computeBackpressure(self, pool, expert, z, eps): # for a specific (expert, task.mixedType) pairing.
-        check1 = False
-        check2 = False
-        print(expert.phi(z))
-        for i in range(int(1/eps)):
-            for j in range(int(1/eps)): # find i1, j1, i2, j2 s.t. z in A_{i1, j1} and phi_s(z) in A_{i2, j2}
-                if self.checkTaskInSquare(z, i, j, eps) and not check1:
-                    i1, j1 = i, j
-                    check1 = True
-                if self.checkTaskInSquare(expert.phi(z), i, j, eps) and not check2:
-                    i2, j2 = i, j # NOTE: there is an extremely rare case possibly caused by a rounding error where the...
-                    # 2nd component of expert.phi(z) is very close to 1, gets rounded to 1 and fails the check of 1 < 1.
-                    check2 = True
-            if check1 and check2: # could probably be done more elegantly. 
-                break
+        i1, j1 = int(round(z[0]/eps, 12)), int(round(z[1]/eps, 12)) # see checkTaskInSquare.
+        i2, j2 = int(round(expert.phi(z)[0]/eps, 12)), int(round(expert.phi(z)[1]/eps, 12))
         
         N_i1j1 = self.countTasksInSquare(pool, i1, j1, eps)
         N_i2j2 = self.countTasksInSquare(pool, i2, j2, eps)
