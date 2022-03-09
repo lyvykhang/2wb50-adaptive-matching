@@ -1,10 +1,10 @@
 from random import choices, sample
 import numpy as np
-import Expert
-import FES
-import Task
-import Event
-import SimResults
+from Expert import Expert
+from FES import FES
+from Task import Task
+from Event import Event
+from SimResults import SimResults
 
 class Sim:
     def __init__(self, a, delta, rate):
