@@ -1,3 +1,4 @@
+from turtle import title
 from Expert import Expert
 from FES import FES
 from Task import Task
@@ -7,8 +8,9 @@ from Sim import Sim
 
 import numpy as np
 from scipy.stats import t
-
 import pandas as pd
+from datetime import datetime
+import matplotlib.pyplot as plt
 
 def getConfidenceInterval(results):
     confidence = 0.95
@@ -28,25 +30,34 @@ def dfToLatex(df, caption):
     print(f"\\caption{{{caption}}}")
     print("\\end{table}")
 
+def dfToPlot(df):
+    plt.plot(df)
+    plt.legend([0.1, 0.2, 0.3, 0.4, 0.5], title="delta")
+    plt.ylabel("Mean sojourn time")
+    plt.xlabel("Rate / Lamba")
+    date = datetime.now().strftime("%Y%m%d_%H%M%S")
+    plt.savefig("results_{0}.png".format(date))
+    plt.clf()
+
 def getTable(a, eps, caption):
     df = pd.DataFrame(data = None, index = range(6), columns = range(5))
-    a = a
-    rate = 0.75
+    dfForPlot = pd.DataFrame(data = None, index = range(6), columns = range(5))
     for i in range(6):
-        rate = rate + (i * 0.2)
-        delta = 0.1
+        rate = 0.75 + (i * 0.02)
         for j in range(5):
-            delta = rate + (j * 0.1)
+            delta = 0.1 + (j * 0.1)
             sim = Sim(a, delta, rate)
             results = sim.sim(10000, eps)
             mean = round(results.meanSojournTime, 2)
             ci = getConfidenceInterval(results)
             df.loc[i, j] = '{0} {1}'.format(str(mean), str(ci))
+            dfForPlot.loc[i, j] = mean
     dfToLatex(df, caption)
+    dfToPlot(dfForPlot)
 
 print("Do one test run")
-sim = Sim(0.5, 0.1, 0.85)
-results = sim.sim(10000, 1/40)
+sim = Sim(0.5, 0.1, 0.79)
+results = sim.sim(1000, 1/40)
 print(len(results.sojournTimes))
 print(results.meanSojournTime)
 print(results.sojournTimes)
