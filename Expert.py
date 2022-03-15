@@ -11,7 +11,7 @@ class Expert:
             return z[0]*(1-(1-self.delta/2)) + z[1]*(1-self.a)
         elif (self.id == 1):
             return z[0]*(1-(1-self.delta/2)) + z[1]*(1-self.delta)
-        elif (self.id == 1):
+        elif (self.id == 2):
             return z[0]*(1-(1-self.a/2)) + z[1]*(1-self.delta)   
 
     def phi(self, z):
@@ -32,7 +32,7 @@ class Expert:
             elif (self.id == 1):
                 success = self.delta 
             elif (self.id == 2):
-                succes = 1 - self.a/2
+                success = 1 - self.a/2
 
         return choices([0, 1], weights=[1-success, success])[0]
     
