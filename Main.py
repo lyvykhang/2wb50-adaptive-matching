@@ -47,7 +47,7 @@ def getTable(a, eps, caption):
         for j in range(5):
             delta = 0.1 + (j * 0.1)
             sim = Sim(a, delta, rate)
-            results = sim.sim(10000, eps)
+            results = sim.sim(10000, eps, 3)
             mean = round(results.meanSojournTime, 2)
             ci = getConfidenceInterval(results)
             df.loc[i, j] = '{0} {1}'.format(str(mean), str(ci))
@@ -57,7 +57,7 @@ def getTable(a, eps, caption):
 
 print("Do one test run")
 sim = Sim(0.5, 0.1, 0.79)
-results = sim.sim(1000, 1/40)
+results = sim.sim(1000, 1/40, 3)
 print(len(results.sojournTimes))
 print(results.meanSojournTime)
 print(results.sojournTimes)

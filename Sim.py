@@ -57,8 +57,13 @@ class Sim:
                 
 
 ### MAIN SIM FUNCTION ###   
-    def sim(self, T, eps=None): # NOTE: runs Random algo if eps argument is not supplied.
-        idleExperts = [Expert(i, self.a, self.delta) for i in range(0, 2)]
+    # NOTE: runs Random algo if eps argument is not supplied.
+    # NOTE: the extra feature won't run if extra argument is not supplied
+    def sim(self, T, eps=None, extra=None): 
+        noExperts = 2
+        if extra != None:
+           noExperts = 3 
+        idleExperts = [Expert(i, self.a, self.delta) for i in range(0, noExperts)]
         fes = FES()
         t = 0
         pool = []
