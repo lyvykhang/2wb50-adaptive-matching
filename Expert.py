@@ -11,17 +11,17 @@ class Expert:
             return z[0]*(1-(1-self.delta/2)) + z[1]*(1-self.a)
         elif (self.id == 1):
             return z[0]*(1-(1-self.delta/2)) + z[1]*(1-self.delta)
-        elif (self.id == 2):
+        elif (self.id == 2): # extra expert
             return z[0]*(1-(1-self.a/2)) + z[1]*(1-self.delta)   
 
     def phi(self, z):
         psi = self.psi(z)
         if (self.id == 0):
-            return [(z[0]*(1-(1-self.delta/2)))/psi, (z[1]*(1-self.a))/psi]
+            return [(z[0]*(1-(1-self.delta/2)))/psi, (z[1]*(1-self.a))/psi, (z[2]*(1-self.delta))/psi]
         elif (self.id == 1):
-            return [(z[0]*(1-(1-self.delta/2)))/psi, (z[1]*(1-self.delta))/psi]
-        elif (self.id == 2):
-            return [(z[0]*(1-(1-self.a/2)))/psi, (z[1]*(1-self.delta))/psi]
+            return [(z[0]*(1-(1-self.delta/2)))/psi, (z[1]*(1-self.delta))/psi, (z[2]*(1-self.a))/psi]
+        elif (self.id == 2): # extra expert
+            return [(z[0]*(1-(1-self.a/2)))/psi, (z[1]*(1-self.delta))/psi, (z[2]*(1-self.delta))/psi]
     
     def attempt(self, task):
         if (task.trueType == 0): # task 1, same prob. of success for both
@@ -33,6 +33,8 @@ class Expert:
                 success = self.delta 
             elif (self.id == 2):
                 success = 1 - self.a/2
+        elif (task.trueType == 2): # extra task type, same prob. of success for both
+            success = self.delta/2
 
         return choices([0, 1], weights=[1-success, success])[0]
     

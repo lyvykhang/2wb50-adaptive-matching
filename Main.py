@@ -57,16 +57,16 @@ def getTable(a, eps, caption):
 
 print("Do one test run")
 sim = Sim(0.5, 0.1, 0.79)
-results = sim.sim(1000, eps=1/40, extra=3)
+results = sim.sim(10000, eps=1/40, extra=1)
 print(len(results.sojournTimes))
-print(results.meanSojournTime)
-print(results.sojournTimes)
+# print(results.meanSojournTime)
+# print(results.sojournTimes)
 
-print("Get 95% confidence interval")
-print(getConfidenceInterval(results))
+# print("Get 95% confidence interval")
+# print(getConfidenceInterval(results))
 
-print("Output LaTeX table for a=1/2 and random algorithm")
-getTable(0.5, None, "a=1/2 and random algorithm")
+# print("Output LaTeX table for a=1/2 and random algorithm")
+# getTable(0.5, None, "a=1/2 and random algorithm")
 
-print("Output LaTeX table for a=1/2 and backpressue 1/40")
-getTable(0.5, (1/40), "a=1/2 and backpressure 1/40")
+# print("Output LaTeX table for a=1/2 and backpressue 1/40")
+# getTable(0.5, (1/40), "a=1/2 and backpressure 1/40")
