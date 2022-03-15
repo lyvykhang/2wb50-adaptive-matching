@@ -39,7 +39,7 @@ def dfToPlot(df):
     plt.savefig("results_{0}.png".format(date))
     plt.clf()
 
-def getTable(a, eps, caption):
+def getTable(a, caption, eps=None, extra=None):
     df = pd.DataFrame(data = None, index = range(6), columns = range(5))
     dfForPlot = pd.DataFrame(data = None, index = range(6), columns = range(5))
     for i in range(6):
@@ -47,7 +47,7 @@ def getTable(a, eps, caption):
         for j in range(5):
             delta = 0.1 + (j * 0.1)
             sim = Sim(a, delta, rate)
-            results = sim.sim(10000, eps=eps, extra=3)
+            results = sim.sim(10000, eps=eps, extra=extra)
             mean = round(results.meanSojournTime, 2)
             ci = getConfidenceInterval(results)
             df.loc[i, j] = '{0} {1}'.format(str(mean), str(ci))
@@ -59,14 +59,17 @@ print("Do one test run")
 sim = Sim(0.5, 0.1, 0.79)
 results = sim.sim(10000, eps=1/40, extra=1)
 print(len(results.sojournTimes))
-# print(results.meanSojournTime)
-# print(results.sojournTimes)
+print(results.meanSojournTime)
+print(results.sojournTimes)
 
-# print("Get 95% confidence interval")
-# print(getConfidenceInterval(results))
+print("Get 95% confidence interval")
+print(getConfidenceInterval(results))
 
-# print("Output LaTeX table for a=1/2 and random algorithm")
-# getTable(0.5, None, "a=1/2 and random algorithm")
+print("Output LaTeX table for a=1/2 and random algorithm")
+getTable(0.5, "a=1/2 and random algorithm")
 
 # print("Output LaTeX table for a=1/2 and backpressue 1/40")
-# getTable(0.5, (1/40), "a=1/2 and backpressure 1/40")
+# getTable(0.5, "a=1/2 and backpressure 1/40", eps = (1/40))
+
+# print("Output LaTeX table with extra features for a=1/2 and backpressue 1/40")
+# getTable(0.5, "a=1/2 and backpressure 1/40, with extra features", eps = (1/40), extra=1)
