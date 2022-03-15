@@ -24,7 +24,7 @@ class Expert: # NOTE: definition includes extra expert and task type
             return [(z[0]*(1-(1-self.a/2)))/psi, (z[1]*(1-self.delta))/psi, (z[2]*(1-self.delta))/psi]
     
     def attempt(self, task):
-        if (task.trueType == 0): # task 1, same prob. of success for experts 1 and 2
+        if (task.trueType == 0):
             if (self.id == 2):
                 success = 1 - self.a/2
             else:
@@ -36,7 +36,7 @@ class Expert: # NOTE: definition includes extra expert and task type
                 success = self.delta 
             elif (self.id == 2):
                 success = self.delta
-        elif (task.trueType == 2): # extra task type, same prob. of success for both
+        elif (task.trueType == 2): # extra task type
             if (self.id == 1):
                 success = self.a
             else:
