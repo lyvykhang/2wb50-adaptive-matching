@@ -35,34 +35,34 @@ class Sim:
     
 
 ### FUNCTIONS FOR BACKPRESSURE ALGO ###
-    # mxType is the z in the assignment, the argument z represents the 3rd dimension of the grid (needed for the extra feature)
-    def checkTaskInSquare(self, mxType, i, j, z, eps): # (i, j) both in range [0, 1/eps-1].
-        # take the integer component of mxType/eps (rounded to 12 d.p. to reduce misclassification...
+    # k is the 3rd dimension for the mixed type when using the extra feature.
+    def checkTaskInSquare(self, z, i, j, k, eps): # (i, j) both in range [0, 1/eps-1].
+        # take the integer component of z/eps (rounded to 12 d.p. to reduce misclassification...
         # ... due to rounding errors), if this is equal to (i, j), the mixed-type is in the square. 
-        z1, z2, z3 = int(round(mxType[0]/eps, 12)), \
-                int(round(mxType[1]/eps, 12)), \
-                int(round(mxType[2]/eps, 12)) # if the 
+        z1, z2, z3 = int(round(z[0]/eps, 12)), \
+                int(round(z[1]/eps, 12)), \
+                int(round(z[2]/eps, 12)) 
 
-        return (z1 == i and z2 == j and z3 == z)
+        return (z1 == i and z2 == j and z3 == k)
 
 
-    def countTasksInSquare(self, pool, i, j, z, eps): # go through the pool of tasks at time t, count any task with mixed type in set A_{i, j}.
-        N_ijz = 0
+    def countTasksInSquare(self, pool, i, j, k, eps): # go through the pool of tasks at time t, count any task with mixed type in set A_{i, j}.
+        N_ijk = 0
         for task in pool:
-            if self.checkTaskInSquare(task.mixedType, i, j, z, eps):
-                N_ijz += 1
-        return N_ijz
+            if self.checkTaskInSquare(task.mixedType, i, j, k, eps):
+                N_ijk += 1
+        return N_ijk
             
 
     def computeBackpressure(self, pool, expert, z, eps): # for a specific (expert, task.mixedType) pairing.
         # if the extra feature is not requested, the 3rd dimension will be 0
-        i1, j1, z1 = int(round(z[0]/eps, 12)), int(round(z[1]/eps, 12)), int(round(z[2]/eps, 12)) # see checkTaskInSquare.
-        i2, j2, z2 = int(round(expert.phi(z)[0]/eps, 12)), int(round(expert.phi(z)[1]/eps, 12)), int(round(expert.phi(z)[2]/eps, 12))
+        i1, j1, k1 = int(round(z[0]/eps, 12)), int(round(z[1]/eps, 12)), int(round(z[2]/eps, 12)) # see checkTaskInSquare.
+        i2, j2, k2 = int(round(expert.phi(z)[0]/eps, 12)), int(round(expert.phi(z)[1]/eps, 12)), int(round(expert.phi(z)[2]/eps, 12))
 
-        N_i1j1z1 = self.countTasksInSquare(pool, i1, j1, z1, eps)
-        N_i2j2z2 = self.countTasksInSquare(pool, i2, j2, z2, eps)
+        N_i1j1k1 = self.countTasksInSquare(pool, i1, j1, k1, eps)
+        N_i2j2k2 = self.countTasksInSquare(pool, i2, j2, k2, eps)
 
-        return N_i1j1z1 - expert.psi(z)*N_i2j2z2
+        return N_i1j1k1 - expert.psi(z)*N_i2j2k2
                 
 
 ### MAIN SIM FUNCTION ###   
